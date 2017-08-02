@@ -1,0 +1,35 @@
+.container {
+}
+button {
+  margin-right: 15px
+}
+.navigation {
+  height: 100%;
+  position: fixed;
+  width: 155px;
+  z-index: 3;
+}
+.mainView {
+  position: absolute;
+  top: 0;
+  left: 155px;
+}
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+.item {
+  display: flex;
+	/* justify-content: space-between; */
+}
+.item .logo {
+  width: 32px;
+  height: 32px;
+}
+.itemMain {
+  margin-left: 20px;
+	margin-bottom: 20px;
+}
+.controls .add {
+  margin-right: 300px;
+}

@@ -31,6 +31,27 @@ const app = new Vue({
     getList (site) {
       axios.get(site.url).then(res => this.parseSiteHtml(site, res.data))
     },
+    getApiData() {
+      chrome.storage.sync.get({
+        apiData: null, // 设置默认值，不需要也可用数组
+      }, (items) => {
+        if (items.apiData) {
+          // console.log('get', items.apiData)
+          this.apiData = items.apiData
+        } else {
+          this.getFeedApi(feedApiUrl).then((data) => {
+            // console.warn('data', data)
+            this.apiData = data
+            this.handleSite(this.currentID)
+            chrome.storage.sync.set({
+              apiData: data,
+            }, async (e) => {
+              console.log('set', e)
+            });
+          })
+        }
+      });
+    },
     parseSiteHtml (site, data) {
       console.warn(site.name)
       let parsedData = {
@@ -77,8 +98,8 @@ const app = new Vue({
       this.showPreloader = true
       const site = this.apiData[id]
       console.warn('id', id, site)
-      if (site.api) {
-        axios.get(site.api).then(res => {
+      if (site.type === 'api') {
+        axios.get(site.url).then(res => {
           res.data.forEach((item) => {
             this.list.push({
               title: item.title,
@@ -87,8 +108,8 @@ const app = new Vue({
           })
           this.showPreloader = false
         })
-      } else if (site.rss) {
-        axios.get(site.rss, res => {
+      } else if (site.type === 'rss') {
+        axios.get(site.url, res => {
           $(res.data).find('item').each((index, item) => {
             this.list.push({
               title: $(item).find('title')[0].textContent,
@@ -110,13 +131,8 @@ const app = new Vue({
   mounted () {
     Storage.setValue('ver', '1.0')
     port.send({act: 'say hello'})
-		this.parseXML()
-    this.getFeedApi(feedApiUrl).then((data) => {
-      // console.warn('data', data)
-			this.apiData = data
-			this.handleSite(this.currentID)
-		})
-
+		// this.parseXML()
+		this.getApiData()
 		// 设定后台打开链接
 		// 必须委托绑定，否则 chrome.tabs 设定会失效
 		let listItemHandler = function(e) {

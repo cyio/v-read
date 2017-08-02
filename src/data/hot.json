@@ -1,5 +1,6 @@
 [
   {
+    "type": "html", 
     "name": "Hacker News", 
     "icon": "https://news.ycombinator.com/favicon.ico", 
     "url": "https://news.ycombinator.com/", 
@@ -9,6 +10,7 @@
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "Solidot",
     "icon": "http://www.solidot.org/favicon.ico",
     "url": "http://www.solidot.org/",
@@ -18,6 +20,7 @@
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "SegmentFault", 
     "url": "http://segmentfault.com/blogs", 
     "icon": "http://static.segmentfault.com/global/img/touch-icon.c78b1075.png", 
@@ -27,6 +30,7 @@
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "热门 - V2EX",
     "icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png",
     "url": "http://hk.v2ex.com/?tab=hot",
@@ -36,12 +40,14 @@
     "isShow": true
   }, 
   {
+    "type": "api", 
     "name": "最新 - V2EX", 
     "icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png", 
-    "api": "https://hk.v2ex.com/api/topics/latest.json", 
+    "url": "https://hk.v2ex.com/api/topics/latest.json", 
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "热门 - LVV2社区", 
     "icon": "https://lvv2.com/templates/default/images/favicon.ico", 
     "url": "https://lvv2.com/", 
@@ -51,6 +57,7 @@
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "精选 - 什么值得买", 
     "icon": "http://www.smzdm.com/favicon.ico", 
     "url": "http://www.smzdm.com/jingxuan/#list_6", 
@@ -60,6 +67,7 @@
     "isShow": true
   },
   {
+    "type": "html", 
     "name": "薅羊毛 - 购物党", 
     "icon": "http://gwdang.com/favicon.ico", 
     "url": "http://gwdang.com/promotion/yangmao", 
@@ -69,18 +77,21 @@
     "isShow": true
   }, 
   {
+    "type": "rss", 
     "name": "优惠 - 水木社区", 
     "icon": "http://images.newsmth.net/nForum/favicon.ico", 
-    "rss": "http://www.newsmth.net/nForum/rss/board-CouponsLife", 
+    "url": "http://www.newsmth.net/nForum/rss/board-CouponsLife", 
     "isShow": true
   }, 
   {
+    "type": "rss", 
     "name": "购物 - 水木社区", 
     "icon": "http://images.newsmth.net/nForum/favicon.ico", 
-    "rss": "http://www.newsmth.net/nForum/rss/board-Shopping", 
+    "url": "http://www.newsmth.net/nForum/rss/board-Shopping", 
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "活动线报 - 赚客吧",
     "icon": "http://www.zuanke8.com/favicon.ico",
     "url": "http://www.zuanke8.com/forum-19-1.html",
@@ -90,6 +101,7 @@
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "热门话题 - 伯乐在线", 
     "icon": "http://jobbole.com/favicon.ico", 
     "url": "http://group.jobbole.com/", 
@@ -99,6 +111,7 @@
     "isShow": true
   }, 
   {
+    "type": "html", 
     "name": "湾区日报",
     "icon": "http://wanqu.co/static/images/wanqu/favicons/favicon-32x32.png",
     "url": "http://wanqu.co/issues/",
@@ -108,6 +121,7 @@
     "isShow": true
   },
   {
+    "type": "html", 
     "name": "Bitcoin - Reddit",
     "icon": "http://www.iconarchive.com/download/i99270/froyoshark/enkel/Bitcoin.ico",
     "url": "http://www.reddit.com/r/bitcoin",
@@ -117,6 +131,7 @@
     "isShow": true
   },
   {
+    "type": "html", 
     "name": "Linux - Reddit",
     "icon": "http://ww3.sinaimg.cn/large/4e5d3ea7gw1ety7g00n3nj204g056wef.jpg",
     "url": "http://www.reddit.com/r/linux",
@@ -126,6 +141,7 @@
     "isShow": true
   },
   {
+    "type": "html", 
     "name": "JavaScript - Reddit",
     "icon": "http://ww3.sinaimg.cn/large/4e5d3ea7gw1ety7eqg2rqj204g04ggli.jpg",
     "url": "http://www.reddit.com/r/javascript",
