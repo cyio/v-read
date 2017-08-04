@@ -21,7 +21,7 @@ const app = new Vue({
   data: {
     list: [],
     apiData: {},
-    currentID: 4,
+    currentId: 4,
     showPreloader: true
   },
   methods: {
@@ -40,7 +40,7 @@ const app = new Vue({
             return data
           })
 
-        this.handleSite(this.currentID)
+        this.handleSite(this.currentId)
       });
     },
     parseSiteHtml (site, data) {
@@ -49,8 +49,8 @@ const app = new Vue({
         url: [],
         title: []
       }
-      parsedData.url = $(data).find(site.selector.url)
-      parsedData.title = site.selector.title ? $(data).find(site.selector.title) : $(data).find(site.selector.url)
+      parsedData.url = $(data).find(site.selectors.url)
+      parsedData.title = site.selectors.title ? $(data).find(site.selectors.title) : $(data).find(site.selectors.url)
       for (let i = 0; i < maxItemNum; i++) {
         let post = {
           url: $(parsedData.url[i]).attr("href"),
@@ -75,8 +75,8 @@ const app = new Vue({
     parseXML (rssUrl) {
     },
     switchList (index) {
-      this.currentID = index
-      this.handleSite(this.currentID)
+      this.currentId = index
+      this.handleSite(this.currentId)
     },
     openTab (url) {
       chrome.tabs.create({
@@ -145,7 +145,7 @@ const app = new Vue({
         <div class="left-nav">
           { this.hasApiData && this.apiData.map((item, index) => {
             return (
-              <div class={["item", (index === this.currentID) && "active"]}>
+              <div class={["item", (index === this.currentId) && "active"]}>
                 <img src={item.icon} title={item.name} onClick={this.switchList.bind(this, index)} />
               </div>
             )
@@ -153,7 +153,7 @@ const app = new Vue({
         </div>
         <div class="main">
           <div class="navbar">
-            <div class="title">{this.hasApiData && this.apiData[this.currentID].name}</div> 
+            <div class="title">{this.hasApiData && this.apiData[this.currentId].name}</div> 
           </div>
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>

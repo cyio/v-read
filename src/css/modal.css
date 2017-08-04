@@ -91,3 +91,11 @@
   margin-top: 10px;
   float: right;
 }
+.content-area input {
+  width: 100%;
+}
+.selectors input {
+  width: 200px;
+  margin-top: 5px;
+  margin-left: 10px;
+}

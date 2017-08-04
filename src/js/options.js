@@ -7,9 +7,8 @@ var app = new Vue({
   el: '#app',
   data: {
     apiData: null,
-		favoriteColor: 'red',
-		likesColor: true,
-    statusText: '',
+    currentId: null,
+    currentItem: null,
 		showModal: false,
   },
   methods: {
@@ -49,11 +48,17 @@ var app = new Vue({
       });
     },
     cleanStorage() {
+      this.apiData = null
       chrome.storage.sync.set({
         apiData: null, // 设置默认值，不需要也可用数组
       }, () => {
         alert('清除成功')
       });
+    },
+    saveItemForm() {
+      this.apiData[this.currentId] = this.currentItem
+      chrome.storage.sync.set({ apiData: this.apiData })
+      this.showModal = false
     }
   },
   computed: {
@@ -84,7 +89,11 @@ var app = new Vue({
               {
                 this.apiData && this.apiData.map((item, index) => {
                   return (
-                    <li class="item" onClick={() => this.showModal = true}>
+                    <li class="item" onClick={() => {
+                      this.showModal = true
+                      this.currentId = index
+                      this.currentItem = item
+                    }}>
                       <img class="logo" src={item.icon} />
                       <div class="itemMain">
                         <div class="itemTitle">{item.name}</div>
@@ -105,20 +114,40 @@ var app = new Vue({
                   <h3>订阅表单</h3>
 									<div class="close-button"  onClick={() => this.showModal = false}></div>
                   <div class="content-area">
+                    <p>类型</p>
+                    <select domPropsValue={this.currentItem.type} onChange={(e) => this.currentItem.type = e.target.value}>
+                      <option value="html">HTML</option>
+                      <option value="api">API</option>
+                    </select>
                     <p>标题</p>
-                    <input />
+                    <input domPropsValue={this.currentItem.name} onChange={e => this.currentItem.name = e.target.value}/>
                     <p>图标</p>
-                    <input />
+                    <input domPropsValue={this.currentItem.icon} onChange={e => this.currentItem.icon = e.target.value}/>
                     <p>地址</p>
-                    <input />
-                    <p>选择器</p>
-                    <input />
-                    <input />
-                    <input />
+                    <input domPropsValue={this.currentItem.url} onChange={e => this.currentItem.url = e.target.value}/>
+                    {
+                      this.currentItem.type === 'html' && (
+                        <div>
+                          <p>选择器</p>
+                          <ul class="selectors">
+                            {Object.keys(this.currentItem.selectors).map((name) => {
+                              let {selector} = this.currentItem.selectors[name]
+                              return (
+                                <li>
+                                  <label>{name}</label>
+                                  <input domPropsValue={this.currentItem.selectors[name]} onChange={e => this.currentItem.selectors[name] 
+= e.target.value}/>
+                                </li>
+                              )
+                            } )}
+                          </ul>
+                        </div>
+                      )
+                    }
                   </div>
                   <div class="action-area">
                     <button  onClick={() => this.showModal = false}>取消</button>
-                    <button>确定</button>
+										<button onClick={this.saveItemForm.bind(this)}>确定</button>
                   </div>
                 </div>
               </div>
