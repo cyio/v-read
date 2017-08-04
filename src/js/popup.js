@@ -32,24 +32,15 @@ const app = new Vue({
       axios.get(site.url).then(res => this.parseSiteHtml(site, res.data))
     },
     getApiData() {
-      chrome.storage.sync.get({
-        apiData: null, // 设置默认值，不需要也可用数组
-      }, (items) => {
-        if (items.apiData) {
-          // console.log('get', items.apiData)
-          this.apiData = items.apiData
-        } else {
-          this.getFeedApi(feedApiUrl).then((data) => {
-            // console.warn('data', data)
-            this.apiData = data
-            this.handleSite(this.currentID)
-            chrome.storage.sync.set({
-              apiData: data,
-            }, async (e) => {
-              console.log('set', e)
-            });
+      chrome.storage.sync.get([ 'apiData' ], async (items) => {
+        this.apiData = items.apiData
+          ? items.apiData
+          : await this.getFeedApi(feedApiUrl).then((data) => {
+            chrome.storage.sync.set({ apiData: data })
+            return data
           })
-        }
+
+        this.handleSite(this.currentID)
       });
     },
     parseSiteHtml (site, data) {
@@ -121,6 +112,19 @@ const app = new Vue({
       } else {
         this.getList(site)
       }
+    },
+    setClickHandler() {
+      // 设定后台打开链接
+      // 必须委托绑定，否则 chrome.tabs 设定会失效
+      let listItemHandler = function(e) {
+        e.preventDefault();
+        chrome.tabs.create({
+          url: $(this).attr("href"),
+          selected: false
+        });
+      };
+      $('body').off('click', '.list .link', listItemHandler);
+      $('body').on('click', '.list .link', listItemHandler);
     }
   },
   computed: {
@@ -129,21 +133,11 @@ const app = new Vue({
     }
   },
   mounted () {
-    Storage.setValue('ver', '1.0')
-    port.send({act: 'say hello'})
+    // Storage.setValue('ver', '1.0')
+    // port.send({act: 'say hello'})
 		// this.parseXML()
 		this.getApiData()
-		// 设定后台打开链接
-		// 必须委托绑定，否则 chrome.tabs 设定会失效
-		let listItemHandler = function(e) {
-			e.preventDefault();
-			chrome.tabs.create({
-				url: $(this).attr("href"),
-				selected: false
-			});
-		};
-		$('body').off('click', '.list .link', listItemHandler);
-		$('body').on('click', '.list .link', listItemHandler);
+		this.setClickHandler()
   },
   render (h) { // <-- h must be in scope
     return (
