@@ -4,6 +4,7 @@ import { Storage, sleep } from './modules/utils'
 Vue.config.productionTip = false
 Vue.config.devtools = false
 
+let sortable
 var app = new Vue({
   el: '#app',
   data: {
@@ -24,12 +25,9 @@ var app = new Vue({
       });
     },
     clearStorage() {
+      if (!confirm('确认清除')) return
       this.apiData = null
-      chrome.storage.sync.set({
-        apiData: null, // 设置默认值，不需要也可用数组
-      }, () => {
-        alert('清除成功')
-      });
+      chrome.storage.sync.set({ apiData: null })
     },
     saveItemForm() {
       this.apiData[this.currentId] = this.currentItem
@@ -51,10 +49,10 @@ var app = new Vue({
       this.showModal = true
     },
     deleteItem(index) {
-      if (confirm(`确认删除${this.apiData[index].name}？`)) {
-        delete this.apiData[index]
-        chrome.storage.sync.set({ apiData: this.apiData })
-      }
+      if (!confirm(`确认删除${this.apiData[index].name}？`)) return
+      const child = document.querySelector(`[data-id='${index}']`)
+      child.parentElement.removeChild(child)
+      sortable.save()
     },
     showItem(item, index) {
       this.showModal = true
@@ -68,7 +66,7 @@ var app = new Vue({
     this.getApiData()
     const self = this
 		const el = document.getElementById('items')
-    const sortable = Sortable.create(el, {
+    sortable = Sortable.create(el, {
       store: {
         get() {
           return []
@@ -78,11 +76,11 @@ var app = new Vue({
           let newApiData = []
           order.forEach(key => newApiData.push(self.apiData[key]))
           chrome.storage.sync.set({ apiData: newApiData })
-          console.log(newApiData)
+          // console.log(newApiData)
         }
       },
-      onEnd(evt) {
-        console.log(evt, self.apiData)
+      onSort(evt) {
+        // console.log(evt, self.apiData)
         this.save()
       }
     })
