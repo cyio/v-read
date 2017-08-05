@@ -47,7 +47,7 @@ var app = new Vue({
         }
       });
     },
-    cleanStorage() {
+    clearStorage() {
       this.apiData = null
       chrome.storage.sync.set({
         apiData: null, // 设置默认值，不需要也可用数组
@@ -59,6 +59,31 @@ var app = new Vue({
       this.apiData[this.currentId] = this.currentItem
       chrome.storage.sync.set({ apiData: this.apiData })
       this.showModal = false
+    },
+    addItem() {
+      this.currentId = this.apiData.length
+      this.currentItem = {
+        "type": "html",
+        "name": null,
+        "icon": null,
+        "url": null,
+        "selectors": {
+          "url": null
+        },
+        "isShow": true
+      }
+      this.showModal = true
+    },
+    deleteItem(index) {
+      if (confirm(`确认删除${this.apiData[index].name}？`)) {
+        delete this.apiData[index]
+        chrome.storage.sync.set({ apiData: this.apiData })
+      }
+    },
+    showItem(item, index) {
+      this.showModal = true
+      this.currentId = index
+      this.currentItem = item
     }
   },
   computed: {
@@ -79,25 +104,25 @@ var app = new Vue({
         <div class="mainView">
           <h1>我的订阅</h1>
           <div class="controls">
-            <button class="add">添加订阅</button>
+            <button class="add" onClick={this.addItem.bind(this)}>添加订阅</button>
             <button>导入</button>
             <button>导出</button>
-            <button onClick={this.cleanStorage.bind(this)}>清空存储</button>
+            <button onClick={this.clearStorage.bind(this)}>清空存储</button>
           </div>
           <div class="content">
-            <ul>
+            <ul class="items">
               {
                 this.apiData && this.apiData.map((item, index) => {
                   return (
-                    <li class="item" onClick={() => {
-                      this.showModal = true
-                      this.currentId = index
-                      this.currentItem = item
-                    }}>
-                      <img class="logo" src={item.icon} />
-                      <div class="itemMain">
-                        <div class="itemTitle">{item.name}</div>
-                        <div class="itemUrl">{item.url}</div>
+                    <li class="item">
+                      <div class="itemInner">
+                        <img class="logo" src={item.icon} />
+                        <div class="itemMain">
+                          <div class="itemTitle">{item.name}</div>
+                          <div class="itemUrl">{item.url}</div>
+                        </div>
+                        <div class="action edit" onClick={this.showItem.bind(this, item, index)}>编辑</div>
+                        <div class="action" onClick={this.deleteItem.bind(this, index)}>删除</div>
                       </div>
                     </li>
                   )
@@ -131,12 +156,10 @@ var app = new Vue({
                           <p>选择器</p>
                           <ul class="selectors">
                             {Object.keys(this.currentItem.selectors).map((name) => {
-                              let {selector} = this.currentItem.selectors[name]
                               return (
                                 <li>
                                   <label>{name}</label>
-                                  <input domPropsValue={this.currentItem.selectors[name]} onChange={e => this.currentItem.selectors[name] 
-= e.target.value}/>
+                                  <input domPropsValue={this.currentItem.selectors[name]} onChange={e => this.currentItem.selectors[name] = e.target.value}/>
                                 </li>
                               )
                             } )}

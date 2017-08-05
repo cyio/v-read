@@ -18,18 +18,47 @@ ul {
   list-style: none;
   padding-left: 0;
 }
-.item {
+.itemInner {
   display: flex;
-	/* justify-content: space-between; */
+  /* justify-content: space-between; */
 }
-.item .logo {
+.itemInner .logo {
   width: 32px;
   height: 32px;
 }
 .itemMain {
   margin-left: 20px;
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 .controls .add {
   margin-right: 300px;
+}
+.items .itemInner{
+  position: relative;
+}
+.items .itemInner .action {
+  background: #8aaaed;
+  border: 0;
+  border-radius: 2px;
+  color: #fff;
+  opacity: 0;
+  margin-top: 0;
+  font-size: 10px;
+  padding: 1px 6px;
+  position: absolute;
+  top: 8px;
+  right: 32px;
+  transition: 150ms opacity;
+  cursor: pointer;
+}
+.items .itemInner .edit {
+  right: 92px;
+}
+.items li:hover .itemInner {
+  background-color: #f0f6fe;
+  color: #555;
+  cursor: pointer;
+}
+.items li:hover .action {
+  opacity: .7;
 }
