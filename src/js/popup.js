@@ -21,7 +21,7 @@ const app = new Vue({
   data: {
     list: [],
     apiData: {},
-    currentId: 4,
+    currentId: 0,
     showPreloader: true
   },
   methods: {

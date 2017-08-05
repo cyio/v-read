@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Sortable from 'sortablejs'
 import { Storage, sleep } from './modules/utils'
 Vue.config.productionTip = false
 Vue.config.devtools = false
@@ -12,31 +13,6 @@ var app = new Vue({
 		showModal: false,
   },
   methods: {
-    saveOptions() {
-      chrome.storage.sync.set({
-        favoriteColor: this.favoriteColor,
-        likesColor: this.likesColor
-      }, async () => {
-        this.statusText = 'Options saved.';
-        await sleep(700)
-        this.statusText = ''
-        // setTimeout(() => {
-          // this.statusText = ''
-        // }, 750)
-      });
-    },
-    restoreOptions() {
-      chrome.storage.sync.get({
-        favoriteColor: this.favoriteColor, // 设置默认值，不需要也可用数组
-        likesColor: this.likesColor
-      }, (items) => {
-        this.favoriteColor = items.favoriteColor;
-        this.likesColor = items.likesColor;
-      });
-    },
-    onChange(name, e) {
-			this[name] = e.target.value
-    },
     getApiData() {
       chrome.storage.sync.get({
         apiData: null, // 设置默认值，不需要也可用数组
@@ -89,8 +65,27 @@ var app = new Vue({
   computed: {
   },
   mounted () {
-    this.restoreOptions()
     this.getApiData()
+    const self = this
+		const el = document.getElementById('items')
+    const sortable = Sortable.create(el, {
+      store: {
+        get() {
+          return []
+        },
+        set(sortable) {
+          const order = sortable.toArray();
+          let newApiData = []
+          order.forEach(key => newApiData.push(self.apiData[key]))
+          chrome.storage.sync.set({ apiData: newApiData })
+          console.log(newApiData)
+        }
+      },
+      onEnd(evt) {
+        console.log(evt, self.apiData)
+        this.save()
+      }
+    })
   },
   render (h) { // <-- h must be in scope
     return (
@@ -110,11 +105,11 @@ var app = new Vue({
             <button onClick={this.clearStorage.bind(this)}>清空存储</button>
           </div>
           <div class="content">
-            <ul class="items">
+            <ul id="items" class="items">
               {
                 this.apiData && this.apiData.map((item, index) => {
                   return (
-                    <li class="item">
+                    <li class="item" data-id={index}>
                       <div class="itemInner">
                         <img class="logo" src={item.icon} />
                         <div class="itemMain">
