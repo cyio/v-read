@@ -58,6 +58,13 @@ var app = new Vue({
       this.showModal = true
       this.currentId = index
       this.currentItem = item
+    },
+    import() {
+      let input = prompt('将 JSON 格式的内容粘贴到输入框')
+      console.log(input)
+    },
+    export() {
+      prompt('已导出 JSON 格式内容，请复制', JSON.stringify(this.apiData))
     }
   },
   computed: {
@@ -98,8 +105,8 @@ var app = new Vue({
           <h1>我的订阅</h1>
           <div class="controls">
             <button class="add" onClick={this.addItem.bind(this)}>添加订阅</button>
-            <button>导入</button>
-            <button>导出</button>
+            <button onClick={this.import.bind(this)}>导入</button>
+            <button onClick={this.export.bind(this)}>导出</button>
             <button onClick={this.clearStorage.bind(this)}>清空存储</button>
           </div>
           <div class="content">
