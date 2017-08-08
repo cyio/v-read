@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Sortable from 'sortablejs'
 import { Storage, sleep } from './modules/utils'
+import Modal from './modal.js'
 Vue.config.productionTip = false
 Vue.config.devtools = false
 
@@ -11,7 +12,11 @@ var app = new Vue({
     apiData: null,
     currentId: null,
     currentItem: null,
-		showModal: false,
+    showModals: {
+      edit: false,
+      import: false,
+      export: false
+    },
   },
   methods: {
     getApiData() {
@@ -32,7 +37,7 @@ var app = new Vue({
     saveItemForm() {
       this.apiData[this.currentId] = this.currentItem
       chrome.storage.sync.set({ apiData: this.apiData })
-      this.showModal = false
+      this.showModals.edit = false
     },
     addItem() {
       this.currentId = this.apiData.length
@@ -46,7 +51,7 @@ var app = new Vue({
         },
         "isShow": true
       }
-      this.showModal = true
+      this.showModals.edit = true
     },
     deleteItem(index) {
       if (!confirm(`确认删除${this.apiData[index].name}？`)) return
@@ -55,16 +60,20 @@ var app = new Vue({
       sortable.save()
     },
     showItem(item, index) {
-      this.showModal = true
+      this.showModals.edit = true
       this.currentId = index
       this.currentItem = item
     },
     import() {
       let input = prompt('将 JSON 格式的内容粘贴到输入框')
-      console.log(input)
+      this.apiData = JSON.parse(input)
+      chrome.storage.sync.set({ apiData: JSON.parse(input) })
     },
-    export() {
-      prompt('已导出 JSON 格式内容，请复制', JSON.stringify(this.apiData))
+    async export() {
+      this.showModals.export = true
+      await sleep(200)
+      console.log(this.apiData[0].name)
+      document.getElementById('export').value = JSON.stringify(this.apiData)
     }
   },
   computed: {
@@ -82,8 +91,10 @@ var app = new Vue({
           const order = sortable.toArray();
           let newApiData = []
           order.forEach(key => newApiData.push(self.apiData[key]))
+          // TODO: bug 排序后 self.apiData 没变，影响导出
+          // self.apiData = newApiData
+          console.log('trigger save')
           chrome.storage.sync.set({ apiData: newApiData })
-          // console.log(newApiData)
         }
       },
       onSort(evt) {
@@ -107,7 +118,7 @@ var app = new Vue({
             <button class="add" onClick={this.addItem.bind(this)}>添加订阅</button>
             <button onClick={this.import.bind(this)}>导入</button>
             <button onClick={this.export.bind(this)}>导出</button>
-            <button onClick={this.clearStorage.bind(this)}>清空存储</button>
+            <button onClick={this.clearStorage.bind(this)}>清空</button>
           </div>
           <div class="content">
             <ul id="items" class="items">
@@ -132,49 +143,64 @@ var app = new Vue({
           </div>
         </div>
         {
-          this.showModal && (
-            <div class="modal-mask">
-              <div class="modal-wrapper">
-                <div class="modal-container">
-                  <h3>订阅表单</h3>
-									<div class="close-button"  onClick={() => this.showModal = false}></div>
-                  <div class="content-area">
-                    <p>类型</p>
-                    <select domPropsValue={this.currentItem.type} onChange={(e) => this.currentItem.type = e.target.value}>
-                      <option value="html">HTML</option>
-                      <option value="api">API</option>
-                    </select>
-                    <p>标题</p>
-                    <input domPropsValue={this.currentItem.name} onChange={e => this.currentItem.name = e.target.value}/>
-                    <p>图标</p>
-                    <input domPropsValue={this.currentItem.icon} onChange={e => this.currentItem.icon = e.target.value}/>
-                    <p>地址</p>
-                    <input domPropsValue={this.currentItem.url} onChange={e => this.currentItem.url = e.target.value}/>
-                    {
-                      this.currentItem.type === 'html' && (
-                        <div>
-                          <p>选择器</p>
-                          <ul class="selectors">
-                            {Object.keys(this.currentItem.selectors).map((name) => {
-                              return (
-                                <li>
-                                  <label>{name}</label>
-                                  <input domPropsValue={this.currentItem.selectors[name]} onChange={e => this.currentItem.selectors[name] = e.target.value}/>
-                                </li>
-                              )
-                            } )}
-                          </ul>
-                        </div>
-                      )
-                    }
-                  </div>
-                  <div class="action-area">
-                    <button  onClick={() => this.showModal = false}>取消</button>
-										<button onClick={this.saveItemForm.bind(this)}>确定</button>
-                  </div>
+          this.showModals.edit && (
+            <Modal slot="modalContent">
+              <div>
+                <h3>订阅表单</h3>
+                <div class="close-button"  onClick={() => this.showModals.edit = false}></div>
+                <div class="content-area">
+                  <p>类型</p>
+                  <select domPropsValue={this.currentItem.type} onChange={(e) => this.currentItem.type = e.target.value}>
+                    <option value="html">HTML</option>
+                    <option value="api">API</option>
+                  </select>
+                  <p>标题</p>
+                  <input domPropsValue={this.currentItem.name} onChange={e => this.currentItem.name = e.target.value}/>
+                  <p>图标</p>
+                  <input domPropsValue={this.currentItem.icon} onChange={e => this.currentItem.icon = e.target.value}/>
+                  <p>地址</p>
+                  <input domPropsValue={this.currentItem.url} onChange={e => this.currentItem.url = e.target.value}/>
+                  {
+                    this.currentItem.type === 'html' && (
+                      <div>
+                        <p>选择器</p>
+                        <ul class="selectors">
+                          {Object.keys(this.currentItem.selectors).map((name) => {
+                            return (
+                              <li>
+                                <label>{name}</label>
+                                <input domPropsValue={this.currentItem.selectors[name]} onChange={e => this.currentItem.selectors[name] = e.target.value}/>
+                              </li>
+                            )
+                          } )}
+                        </ul>
+                      </div>
+                    )
+                  }
+                </div>
+                <div class="action-area">
+                  <button  onClick={() => this.showModals.edit = false}>取消</button>
+                  <button onClick={this.saveItemForm.bind(this)}>确定</button>
                 </div>
               </div>
-            </div>
+            </Modal>
+          )
+        }
+        {
+          this.showModals.export && (
+            <Modal slot="modalContent">
+              <div>
+                <h3>导出</h3>
+                <div class="close-button"  onClick={() => this.showModals.export = false}></div>
+                <div class="content-area">
+                  <textarea id="export"></textarea>
+                </div>
+                <button onClick={() => {
+                  document.getElementById('export').select()
+									document.execCommand("Copy")
+                }}>复制</button>
+              </div>
+            </Modal>
           )
         }
       </div>

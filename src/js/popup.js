@@ -2,7 +2,6 @@ import Vue from 'vue'
 import $ from 'jquery'
 import axios from 'axios'
 import { mainConnector, Storage } from './modules/utils'
-import Hello from './hello.js'
 
 const port  = new mainConnector();
 port.name = "chrome-extension-skeleton";
