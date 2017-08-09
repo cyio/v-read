@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Sortable from 'sortablejs'
-import { Storage, sleep } from './modules/utils'
+import { Storage, sleep, IsJsonString } from './modules/utils'
 import Modal from './modal.js'
 Vue.config.productionTip = false
 Vue.config.devtools = false
@@ -66,8 +66,14 @@ var app = new Vue({
     },
     import() {
       let input = prompt('将 JSON 格式的内容粘贴到输入框')
-      this.apiData = JSON.parse(input)
-      chrome.storage.sync.set({ apiData: JSON.parse(input) })
+      if (input) {
+        if (!IsJsonString(input)) {
+          alert('不是有效的 JSON 格式')
+          return
+        }
+        this.apiData = JSON.parse(input)
+        chrome.storage.sync.set({ apiData: JSON.parse(input) })
+      }
     },
     async export() {
       this.showModals.export = true

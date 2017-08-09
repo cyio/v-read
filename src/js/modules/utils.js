@@ -100,3 +100,11 @@ export const formatTime = function(value) {
 export function sleep(ms = 0) {
 		return new Promise((resolve, reject) => setTimeout(resolve, ms));
 }
+export function IsJsonString(str) {
+		try {
+				JSON.parse(str);
+		} catch (e) {
+				return false;
+		}
+		return true;
+}
