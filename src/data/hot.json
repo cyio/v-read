@@ -1,162 +1,154 @@
 [{
-		"type": "html",
-		"name": "Hacker News",
-		"icon": "https://news.ycombinator.com/favicon.ico",
-		"url": "https://news.ycombinator.com/",
-		"selectors": {
-			"url": ".title>a"
-		},
-		"show": true
+	"icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png",
+	"name": "最新 - V2EX",
+	"show": true,
+	"type": "api",
+	"url": "https://hk.v2ex.com/api/topics/latest.json"
+}, {
+	"icon": "https://lvv2.com/templates/default/images/favicon.ico",
+	"name": "热门 - LVV2社区",
+	"selectors": {
+		"url": ".entry a.title"
 	},
-	{
-		"type": "html",
-		"name": "Solidot",
-		"icon": "http://www.solidot.org/favicon.ico",
-		"url": "http://www.solidot.org/",
-		"selectors": {
-			"url": ".bg_htit>h2>a"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "https://lvv2.com/"
+}, {
+	"icon": "http://www.solidot.org/favicon.ico",
+	"name": "Solidot",
+	"selectors": {
+		"url": ".bg_htit>h2>a"
 	},
-	{
-		"type": "html",
-		"name": "SegmentFault",
-		"url": "http://segmentfault.com/blogs",
-		"icon": "http://static.segmentfault.com/global/img/touch-icon.c78b1075.png",
-		"selectors": {
-			"url": ".title>a"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://www.solidot.org/"
+}, {
+	"icon": "https://news.ycombinator.com/favicon.ico",
+	"name": "Hacker News",
+	"selectors": {
+		"url": ".title>a"
 	},
-	{
-		"type": "html",
-		"name": "热门 - V2EX",
-		"icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png",
-		"url": "http://hk.v2ex.com/?tab=hot",
-		"selectors": {
-			"url": "span.item_title > a"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "https://news.ycombinator.com/"
+}, {
+	"icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png",
+	"name": "热门 - V2EX",
+	"selectors": {
+		"url": "span.item_title > a"
 	},
-	{
-		"type": "api",
-		"name": "最新 - V2EX",
-		"icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png",
-		"url": "https://hk.v2ex.com/api/topics/latest.json",
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://hk.v2ex.com/?tab=hot"
+}, {
+	"icon": "http://images.newsmth.net/nForum/favicon.ico",
+	"name": "优惠 - 水木社区",
+	"show": true,
+	"type": "rss",
+	"url": "http://www.newsmth.net/nForum/rss/board-CouponsLife"
+}, {
+	"icon": "http://static.segmentfault.com/global/img/touch-icon.c78b1075.png",
+	"name": "SegmentFault",
+	"selectors": {
+		"url": ".title>a"
 	},
-	{
-		"type": "html",
-		"name": "热门 - LVV2社区",
-		"icon": "https://lvv2.com/templates/default/images/favicon.ico",
-		"url": "https://lvv2.com/",
-		"selectors": {
-			"url": ".entry a.title"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://segmentfault.com/blogs"
+}, {
+	"icon": "http://images.newsmth.net/nForum/favicon.ico",
+	"name": "购物 - 水木社区",
+	"show": true,
+	"type": "rss",
+	"url": "http://www.newsmth.net/nForum/rss/board-Shopping"
+}, {
+	"icon": "http://www.smzdm.com/favicon.ico",
+	"name": "精选 - 什么值得买",
+	"selectors": {
+		"url": "#feed-main-list .feed-block-title a"
 	},
-	{
-		"type": "html",
-		"name": "精选 - 什么值得买",
-		"icon": "http://www.smzdm.com/favicon.ico",
-		"url": "http://www.smzdm.com/jingxuan/#list_6",
-		"selectors": {
-			"url": "#feed-main-list .feed-block-title a"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://www.smzdm.com/jingxuan/#list_6"
+}, {
+	"icon": "http://gwdang.com/favicon.ico",
+	"name": "薅羊毛 - 购物党",
+	"selectors": {
+		"url": ".search_box a.zdm_title"
 	},
-	{
-		"type": "html",
-		"name": "薅羊毛 - 购物党",
-		"icon": "http://gwdang.com/favicon.ico",
-		"url": "http://gwdang.com/promotion/yangmao",
-		"selectors": {
-			"url": ".search_box a.zdm_title"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://gwdang.com/promotion/yangmao"
+}, {
+	"icon": "http://www.zuanke8.com/favicon.ico",
+	"name": "活动线报 - 赚客吧",
+	"selectors": {
+		"url": "a.s.xst"
 	},
-	{
-		"type": "rss",
-		"name": "优惠 - 水木社区",
-		"icon": "http://images.newsmth.net/nForum/favicon.ico",
-		"url": "http://www.newsmth.net/nForum/rss/board-CouponsLife",
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://www.zuanke8.com/forum-19-1.html"
+}, {
+	"icon": "http://jobbole.com/favicon.ico",
+	"name": "热门话题 - 伯乐在线",
+	"selectors": {
+		"url": ".list-posts .media:not(.sponsored) .p-tit a"
 	},
-	{
-		"type": "rss",
-		"name": "购物 - 水木社区",
-		"icon": "http://images.newsmth.net/nForum/favicon.ico",
-		"url": "http://www.newsmth.net/nForum/rss/board-Shopping",
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://group.jobbole.com/"
+}, {
+	"icon": "http://wanqu.co/static/images/wanqu/favicons/favicon-32x32.png",
+	"name": "湾区日报",
+	"selectors": {
+		"url": "li.list-group-item .list-title a"
 	},
-	{
-		"type": "html",
-		"name": "活动线报 - 赚客吧",
-		"icon": "http://www.zuanke8.com/favicon.ico",
-		"url": "http://www.zuanke8.com/forum-19-1.html",
-		"selectors": {
-			"url": "a.s.xst"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://wanqu.co/issues/"
+}, {
+	"icon": "http://www.iconarchive.com/download/i99270/froyoshark/enkel/Bitcoin.ico",
+	"name": "Bitcoin - Reddit",
+	"selectors": {
+		"url": "#siteTable .title.may-blank"
 	},
-	{
-		"type": "html",
-		"name": "热门话题 - 伯乐在线",
-		"icon": "http://jobbole.com/favicon.ico",
-		"url": "http://group.jobbole.com/",
-		"selectors": {
-			"url": ".list-posts .media:not(.sponsored) .p-tit a"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://www.reddit.com/r/bitcoin"
+}, {
+	"icon": "http://ww3.sinaimg.cn/large/4e5d3ea7gw1ety7g00n3nj204g056wef.jpg",
+	"name": "Linux - Reddit",
+	"selectors": {
+		"url": "#siteTable .title.may-blank"
 	},
-	{
-		"type": "html",
-		"name": "湾区日报",
-		"icon": "http://wanqu.co/static/images/wanqu/favicons/favicon-32x32.png",
-		"url": "http://wanqu.co/issues/",
-		"selectors": {
-			"url": "li.list-group-item .list-title a"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://www.reddit.com/r/linux"
+}, {
+	"icon": "http://ww3.sinaimg.cn/large/4e5d3ea7gw1ety7eqg2rqj204g04ggli.jpg",
+	"name": "JavaScript - Reddit",
+	"selectors": {
+		"url": "#siteTable .title.may-blank"
 	},
-	{
-		"type": "html",
-		"name": "Bitcoin - Reddit",
-		"icon": "http://www.iconarchive.com/download/i99270/froyoshark/enkel/Bitcoin.ico",
-		"url": "http://www.reddit.com/r/bitcoin",
-		"selectors": {
-			"url": "#siteTable .title.may-blank"
-		},
-		"show": true
+	"show": true,
+	"type": "html",
+	"url": "http://www.reddit.com/r/javascript"
+}, {
+	"icon": "http://www.dygang.net/favicon.ico",
+	"isShow": true,
+	"name": "电影港",
+	"selectors": {
+		"url": "#tab1_div_0 .c2"
 	},
-	{
-		"type": "html",
-		"name": "Linux - Reddit",
-		"icon": "http://ww3.sinaimg.cn/large/4e5d3ea7gw1ety7g00n3nj204g056wef.jpg",
-		"url": "http://www.reddit.com/r/linux",
-		"selectors": {
-			"url": "#siteTable .title.may-blank"
-		},
-		"show": true
+	"type": "html",
+	"url": "http://www.dygang.net/"
+}, {
+	"icon": null,
+	"isShow": true,
+	"name": "Kwok Miles",
+	"selectors": {
+		"url": ".tweet-text"
 	},
-	{
-		"type": "html",
-		"name": "JavaScript - Reddit",
-		"icon": "http://ww3.sinaimg.cn/large/4e5d3ea7gw1ety7eqg2rqj204g04ggli.jpg",
-		"url": "http://www.reddit.com/r/javascript",
-		"selectors": {
-			"url": "#siteTable .title.may-blank"
-		},
-		"show": true
-	},
-	{
-		"name": "Youtube",
-		"icon": "https://s.ytimg.com/yts/img/favicon-vflz7uhzw.ico",
-		"url": "https://www.youtube.com/",
-		"selectors": {
-			"url": ".item-section .yt-lockup-title a.yt-uix-sessionlink",
-			"media": ".item-section .yt-thumb"
-		},
-		"show": true
-	}
-]
+	"type": "html",
+	"url": "https://twitter.com/KwokMiles"
+}]

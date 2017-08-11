@@ -159,6 +159,7 @@ var app = new Vue({
                   <select domPropsValue={this.currentItem.type} onChange={(e) => this.currentItem.type = e.target.value}>
                     <option value="html">HTML</option>
                     <option value="api">API</option>
+										<option value="rss">RSS</option>
                   </select>
                   <p>标题</p>
                   <input domPropsValue={this.currentItem.name} onChange={e => this.currentItem.name = e.target.value}/>
@@ -205,6 +206,7 @@ var app = new Vue({
                   document.getElementById('export').select()
 									document.execCommand("Copy")
                 }}>复制</button>
+                <a href="https://jsonlint.com/" target="_blank">JSON 在线工具</a>
               </div>
             </Modal>
           )

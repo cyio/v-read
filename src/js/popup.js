@@ -90,7 +90,7 @@ const app = new Vue({
       this.list = []
       this.showPreloader = true
       const site = this.apiData[id]
-      console.warn('id', id, site)
+      console.warn('id', id, site.type, site.url)
       if (site.type === 'api') {
         axios.get(site.url).then(res => {
           res.data.forEach((item) => {
@@ -102,8 +102,8 @@ const app = new Vue({
           this.showPreloader = false
         })
       } else if (site.type === 'rss') {
-        axios.get(site.url, res => {
-          $(res.data).find('item').each((index, item) => {
+        $.get(site.url, data => { // 用 axios 请求 rss 有问题
+          $(data).find('item').each((index, item) => {
             this.list.push({
               title: $(item).find('title')[0].textContent,
               url: $(item).find('link')[0].textContent
