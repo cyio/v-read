@@ -129,7 +129,7 @@ const app = new Vue({
       $('body').on('click', '.list .link', listItemHandler);
     },
     setHints() {
-      addEventListener('keydown', (e) => {
+      $('body').keydown(e => {
         // alert(e.keyCode)
         switch (e.keyCode) {
           case 40: // down arrow
@@ -155,7 +155,7 @@ const app = new Vue({
             const linkId = String.fromCharCode(e.keyCode)
             $(`[link-id=${linkId}]`).click()
         }
-      }, false)
+      })
     }
   },
   computed: {
