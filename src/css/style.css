@@ -88,6 +88,9 @@ body, #app {
   font-size: 28px;
   color: #BFB4B4;
 }
+.list .item {
+  position: relative;
+}
 .list .item .link {
   text-decoration: none;
   color: #333;
@@ -138,3 +141,15 @@ body, #app {
   }
 }
 /* === Preloader end === */
+
+.hint {
+  background: #e0e013;
+  color: #222;
+  position: absolute;
+  right: 2px;
+  top: 5px;
+  width: 15px;
+  text-align: center;
+  border: 1px solid gray;
+  border-radius: 2px;
+}

@@ -15,13 +15,15 @@ Vue.config.devtools = false
 
 const feedApiUrl = '../data/hot.json'
 const maxItemNum = 15
+const alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 const app = new Vue({
   el: '#app',
   data: {
     list: [],
     apiData: {},
     currentId: 0,
-    showPreloader: true
+    showPreloader: true,
+    showHint: false,
   },
   methods: {
     getFeedApi (url) {
@@ -74,6 +76,7 @@ const app = new Vue({
     parseXML (rssUrl) {
     },
     switchList (index) {
+      this.showHint = false
       this.currentId = index
       this.handleSite(this.currentId)
     },
@@ -124,12 +127,41 @@ const app = new Vue({
       };
       $('body').off('click', '.list .link', listItemHandler);
       $('body').on('click', '.list .link', listItemHandler);
+    },
+    setHints() {
+      addEventListener('keydown', (e) => {
+        // alert(e.keyCode)
+        switch (e.keyCode) {
+          case 40: // down arrow
+            this.switchList(this.currentId + 1)
+            break
+          case 38: // up arrow
+            if (this.currentId !== 0) {
+              this.switchList(this.currentId - 1)
+            }
+            break
+          case 27: // escape
+            if (this.showHint) {
+              e.preventDefault()
+              this.showHint = false
+            }
+            break
+          case 70: // f
+            if (!this.showHint) {
+              this.showHint = true
+              break
+            }
+          default:
+            const linkId = String.fromCharCode(e.keyCode)
+            $(`[link-id=${linkId}]`).click()
+        }
+      }, false)
     }
   },
   computed: {
     hasApiData() {
       return this.apiData && this.apiData.length
-    }
+    },
   },
   mounted () {
     // Storage.setValue('ver', '1.0')
@@ -137,6 +169,7 @@ const app = new Vue({
 		// this.parseXML()
 		this.getApiData()
 		this.setClickHandler()
+		this.setHints()
   },
   render (h) { // <-- h must be in scope
     return (
@@ -157,10 +190,11 @@ const app = new Vue({
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>
                 : 
-                this.list.map((item) => {
+                this.list.map((item, index) => {
                   return (
                     <div class="item">
-                      <a class="link" href={item.url} title={item.title}>{item.title}</a>
+                      <a class="link" href={item.url} title={item.title} link-id={alphabet[index].toUpperCase()}>{item.title}</a>
+                      {this.showHint && <span class="hint">{alphabet[index].toUpperCase()}</span>}
                     </div>
                   )
                 })
