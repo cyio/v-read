@@ -138,6 +138,8 @@ const app = new Vue({
           case 38: // up arrow
             if (this.currentId !== 0) {
               this.switchList(this.currentId - 1)
+            } else {
+              this.switchList(this.list.length)
             }
             break
           case 27: // escape
