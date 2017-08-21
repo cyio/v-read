@@ -125,8 +125,8 @@ const app = new Vue({
           selected: false
         });
       };
-      $('body').off('click', '.list .link', listItemHandler);
-      $('body').on('click', '.list .link', listItemHandler);
+      $('body').off('click', 'a', listItemHandler);
+      $('body').on('click', 'a', listItemHandler);
     },
     setHints() {
       $('body').keydown(e => {
@@ -187,7 +187,7 @@ const app = new Vue({
         </div>
         <div class="main">
           <div class="navbar">
-            <div class="title">{this.hasApiData && this.apiData[this.currentId].name}</div> 
+            <a class="title" href={this.apiData[this.currentId].url}>{this.hasApiData && this.apiData[this.currentId].name}</a> 
           </div>
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>

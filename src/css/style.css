@@ -87,6 +87,10 @@ body, #app {
   font-family: 'vgasys';
   font-size: 28px;
   color: #BFB4B4;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-decoration: none;
 }
 .list .item {
   position: relative;
