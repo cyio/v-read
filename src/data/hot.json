@@ -142,13 +142,4 @@
 	},
 	"type": "html",
 	"url": "http://www.dygang.net/"
-}, {
-	"icon": null,
-	"isShow": true,
-	"name": "Kwok Miles",
-	"selectors": {
-		"url": ".tweet-text"
-	},
-	"type": "html",
-	"url": "https://twitter.com/KwokMiles"
 }]
