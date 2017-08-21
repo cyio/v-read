@@ -19,6 +19,7 @@
     "lodash": "^4.17.4",
     "sortablejs": "^1.6.0",
     "vue": "^2.4.2",
+    "webpack-chrome-extension-reloader": "^0.4.0",
     "zip-webpack-plugin": "^2.0.0"
   },
   "devDependencies": {
