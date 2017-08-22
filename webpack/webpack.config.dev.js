@@ -25,7 +25,7 @@ module.exports = _.merge({}, config, {
       template: path.resolve(__dirname, '../src/manifest.json'),
       outputFile: path.resolve(__dirname, '../build/dev/manifest.json'),
     }),
-    new ChromeExtensionReloader() // ONLY USE IT IN DEVELOPMENT BUILD!
+    // new ChromeExtensionReloader() // ONLY USE IT IN DEVELOPMENT BUILD!
   ],
   watch: true
 });
