@@ -4977,7 +4977,7 @@ webpack-sources@^1.0.1:
 
 "webpack-version-file-plugin@https://github.com/cyio/webpack-version-file-plugin":
   version "0.2.3"
-  resolved "https://github.com/cyio/webpack-version-file-plugin#650adaf843b6bc86645b987cd944591194cc3f4e"
+  resolved "https://github.com/cyio/webpack-version-file-plugin#492a487858d8e2cb3eb092b4d1b9e64e6e0cf9f8"
   dependencies:
     ejs "~1.0.0"
     fs latest
