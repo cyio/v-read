@@ -76,6 +76,7 @@ const app = new Vue({
     parseXML (rssUrl) {
     },
     switchList (index) {
+      console.log('handle id ', index)
       this.showHint = false
       this.currentId = index
       this.handleSite(this.currentId)
@@ -118,28 +119,32 @@ const app = new Vue({
     setClickHandler() {
       // 设定后台打开链接
       // 必须委托绑定，否则 chrome.tabs 设定会失效
-      let listItemHandler = function(e) {
+      let listItemHandler = (e) => {
         e.preventDefault();
         chrome.tabs.create({
           url: $(this).attr("href"),
           selected: false
         });
       };
-      $('body').off('click', 'a', listItemHandler);
-      $('body').on('click', 'a', listItemHandler);
+      $('body').off('click', '.list .link', listItemHandler);
+      $('body').on('click', '.list .link', listItemHandler);
     },
     setHints() {
       $('body').keydown(e => {
         // alert(e.keyCode)
         switch (e.keyCode) {
           case 40: // down arrow
-            this.switchList(this.currentId + 1)
+            if (this.currentId === this.apiData.length - 1) {
+              this.switchList(0)
+            } else {
+              this.switchList(this.currentId + 1)
+            }
             break
           case 38: // up arrow
             if (this.currentId !== 0) {
               this.switchList(this.currentId - 1)
             } else {
-              this.switchList(this.list.length)
+              this.switchList(this.apiData.length - 1)
             }
             break
           case 27: // escape
@@ -187,7 +192,7 @@ const app = new Vue({
         </div>
         <div class="main">
           <div class="navbar">
-            <a class="title" href={this.apiData[this.currentId].url}>{this.hasApiData && this.apiData[this.currentId].name}</a> 
+            <div class="title">{this.hasApiData && this.apiData[this.currentId].name}</div> 
           </div>
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>
