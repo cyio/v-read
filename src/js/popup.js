@@ -119,8 +119,9 @@ const app = new Vue({
     setClickHandler() {
       // 设定后台打开链接
       // 必须委托绑定，否则 chrome.tabs 设定会失效
-      let listItemHandler = (e) => {
+      let listItemHandler = function(e) {
         e.preventDefault();
+        alert($(this).attr("href"))
         chrome.tabs.create({
           url: $(this).attr("href"),
           selected: false
