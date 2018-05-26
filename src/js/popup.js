@@ -13,20 +13,20 @@ port.onMessage((msg) => {
 Vue.config.productionTip = false
 Vue.config.devtools = false
 
-const feedApiUrl = '../data/hot.json'
+const feedsApiUrl = '../data/default.json'
 const maxItemNum = 15
 const alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 const app = new Vue({
   el: '#app',
   data: {
     list: [],
-    apiData: {},
-    currentId: 0,
+    apiData: null,
+    currentId: null,
     showPreloader: true,
     showHint: false,
   },
   methods: {
-    getFeedApi (url) {
+    getFeedsApi (url) {
       return axios.get(url).then(res => res.data);
     },
     getList (site) {
@@ -36,16 +36,25 @@ const app = new Vue({
       chrome.storage.sync.get([ 'apiData' ], async (items) => {
         this.apiData = items.apiData
           ? items.apiData
-          : await this.getFeedApi(feedApiUrl).then((data) => {
+          : await this.getFeedsApi(feedsApiUrl).then((tmpData) => {
+            let data = {...tmpData}
+            if (!data.sorting.length) {
+              for (let i of Object.keys(data.feeds)) {
+                data.sorting.push(i)
+              }
+            }
+            this.currentId = data.sorting[0]
+            console.log(data)
             chrome.storage.sync.set({ apiData: data })
             return data
           })
 
+        this.currentId = this.apiData.sorting[0]
         this.handleSite(this.currentId)
       });
     },
     parseSiteHtml (site, data) {
-      console.warn(site.name)
+      console.warn(site)
       let parsedData = {
         url: [],
         title: []
@@ -90,7 +99,7 @@ const app = new Vue({
     handleSite (id) {
       this.list = []
       this.showPreloader = true
-      const site = this.apiData[id]
+      const site = this.apiData.feeds[id]
       console.warn('id', id, site.type, site.url)
       if (site.type === 'api') {
         axios.get(site.url).then(res => {
@@ -167,7 +176,7 @@ const app = new Vue({
   },
   computed: {
     hasApiData() {
-      return this.apiData && this.apiData.length
+      return this.apiData && Object.keys(this.apiData.feeds).length
     },
   },
   mounted () {
@@ -182,17 +191,18 @@ const app = new Vue({
     return (
       <div id="app">
         <div class="left-nav">
-          { this.hasApiData && this.apiData.map((item, index) => {
+          { this.hasApiData &&  this.apiData.sorting.map((name, index) => {
+            let item = this.apiData.feeds[name]
             return (
-              <div class={["item", (index === this.currentId) && "active"]}>
-                <img src={item.icon} title={item.name} onClick={this.switchList.bind(this, index)} />
+              <div class={["item", (item.name === this.currentId) && "active"]}>
+                <img src={item.icon} title={item.name} onClick={this.switchList.bind(this, item.name)} />
               </div>
             )
           }) }
         </div>
         <div class="main">
           <div class="navbar">
-            <div class="title">{this.hasApiData && this.apiData[this.currentId].name}</div> 
+            <div class="title">{this.hasApiData && this.apiData.feeds[this.currentId].name}</div> 
           </div>
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>

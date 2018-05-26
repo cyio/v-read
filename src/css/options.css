@@ -36,6 +36,13 @@ ul {
 .items .itemInner{
   position: relative;
 }
+.btnGroup {
+  display: flex;
+  justify-content: space-around;
+  position: absolute;
+  top: 40%;
+  right: 12px;
+}
 .items .itemInner .action {
   background: #8aaaed;
   border: 0;
@@ -43,11 +50,9 @@ ul {
   color: #fff;
   opacity: 0;
   margin-top: 0;
+  margin-right: 8px;
   font-size: 10px;
   padding: 1px 6px;
-  position: absolute;
-  top: 8px;
-  right: 32px;
   transition: 150ms opacity;
   cursor: pointer;
 }

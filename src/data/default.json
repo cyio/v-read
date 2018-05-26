@@ -1,0 +1,20 @@
+{
+  "sorting": [],
+  "feeds": {
+    "最新 - V2EX": {
+      "name": "最新 - V2EX",
+      "icon": "http://hk.v2ex.com/static/img/icon_rayps_64.png",
+      "type": "api",
+      "url": "https://hk.v2ex.com/api/topics/latest.json"
+    },
+    "热门 - LVV2社区": {
+      "name": "热门 - LVV2社区",
+      "icon": "https://lvv2.com/templates/default/images/favicon.ico",
+      "selectors": {
+        "url": ".entry a.title"
+      },
+      "type": "html",
+      "url": "https://lvv2.com/"
+    }
+  }
+}

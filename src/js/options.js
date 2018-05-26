@@ -35,12 +35,16 @@ var app = new Vue({
       chrome.storage.sync.set({ apiData: null })
     },
     saveItemForm() {
-      this.apiData[this.currentId] = this.currentItem
+      if (this.apiData.feeds[this.currentItem.name]) {
+        alert('标题重复，请修改')
+        return
+      }
+      this.apiData.feeds[this.currentItem.name] = this.currentItem
+      this.apiData.sorting.push(this.currentItem.name)
       chrome.storage.sync.set({ apiData: this.apiData })
       this.showModals.edit = false
     },
     addItem() {
-      this.currentId = this.apiData.length
       this.currentItem = {
         "type": "html",
         "name": null,
@@ -54,15 +58,21 @@ var app = new Vue({
       this.showModals.edit = true
     },
     deleteItem(index) {
-      if (!confirm(`确认删除${this.apiData[index].name}？`)) return
+      if (!confirm(`确认删除${index}？`)) return
       const child = document.querySelector(`[data-id='${index}']`)
       child.parentElement.removeChild(child)
       sortable.save()
     },
-    showItem(item, index) {
+    showItem(item) {
       this.showModals.edit = true
-      this.currentId = index
       this.currentItem = item
+      this.currentId = item.name
+    },
+    cloneItem(item) {
+      let cloneItem = {...item}
+      cloneItem.name = cloneItem.name
+      this.currentItem = cloneItem
+      this.showModals.edit = true
     },
     import() {
       let input = prompt('将 JSON 格式的内容粘贴到输入框')
@@ -78,8 +88,7 @@ var app = new Vue({
     async export() {
       this.showModals.export = true
       await sleep(200)
-      console.log(this.apiData[0].name)
-      document.getElementById('export').value = JSON.stringify(this.apiData)
+      document.getElementById('export').value = JSON.stringify(this.apiData, null, 2)
     }
   },
   computed: {
@@ -94,13 +103,8 @@ var app = new Vue({
           return []
         },
         set(sortable) {
-          const order = sortable.toArray();
-          let newApiData = []
-          order.forEach(key => newApiData.push(self.apiData[key]))
-          // TODO: bug 排序后 self.apiData 没变，影响导出
-          // self.apiData = newApiData
-          console.log('trigger save')
-          chrome.storage.sync.set({ apiData: newApiData })
+          self.apiData.sorting = sortable.toArray();
+          chrome.storage.sync.set({ apiData: self.apiData })
         }
       },
       onSort(evt) {
@@ -129,17 +133,21 @@ var app = new Vue({
           <div class="content">
             <ul id="items" class="items">
               {
-                this.apiData && this.apiData.map((item, index) => {
+                this.apiData && this.apiData.sorting.map((name, index) => {
+                  let item = this.apiData.feeds[name]
                   return (
-                    <li class="item" data-id={index}>
+                    <li class="item" data-id={item.name}>
                       <div class="itemInner">
                         <img class="logo" src={item.icon} />
                         <div class="itemMain">
                           <div class="itemTitle">{item.name}</div>
                           <div class="itemUrl">{item.url}</div>
                         </div>
-                        <div class="action edit" onClick={this.showItem.bind(this, item, index)}>编辑</div>
-                        <div class="action" onClick={this.deleteItem.bind(this, index)}>删除</div>
+                        <div class="btnGroup">
+                          <div class="action edit" onClick={this.showItem.bind(this, item)}>编辑</div>
+                          <div class="action" onClick={this.cloneItem.bind(this, item)}>克隆</div>
+                          <div class="action" onClick={this.deleteItem.bind(this, item.name)}>删除</div>
+                        </div>
                       </div>
                     </li>
                   )
@@ -204,9 +212,8 @@ var app = new Vue({
                 </div>
                 <button onClick={() => {
                   document.getElementById('export').select()
-									document.execCommand("Copy")
+                  document.execCommand("Copy")
                 }}>复制</button>
-                <a href="https://jsonlint.com/" target="_blank">JSON 在线工具</a>
               </div>
             </Modal>
           )
