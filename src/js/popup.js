@@ -21,7 +21,7 @@ const app = new Vue({
   data: {
     list: [],
     apiData: null,
-    currentId: null,
+    activeItemName: null,
     showPreloader: true,
     showHint: false,
   },
@@ -43,14 +43,14 @@ const app = new Vue({
                 data.sorting.push(i)
               }
             }
-            this.currentId = data.sorting[0]
+            this.activeItemName = data.sorting[0]
             console.log(data)
             chrome.storage.sync.set({ apiData: data })
             return data
           })
 
-        this.currentId = this.apiData.sorting[0]
-        this.handleSite(this.currentId)
+        this.activeItemName = this.apiData.sorting[0]
+        this.handleSite(this.activeItemName)
       });
     },
     parseSiteHtml (site, data) {
@@ -84,11 +84,11 @@ const app = new Vue({
     },
     parseXML (rssUrl) {
     },
-    switchList (index) {
-      console.log('handle id ', index)
+    switchList (name) {
+      console.log('handle id ', name)
       this.showHint = false
-      this.currentId = index
-      this.handleSite(this.currentId)
+      this.activeItemName = name
+      this.handleSite(this.activeItemName)
     },
     openTab (url) {
       chrome.tabs.create({
@@ -140,20 +140,20 @@ const app = new Vue({
     },
     setHints() {
       $('body').keydown(e => {
-        // alert(e.keyCode)
+        let feedNames = this.apiData.sorting
         switch (e.keyCode) {
           case 40: // down arrow
-            if (this.currentId === this.apiData.length - 1) {
-              this.switchList(0)
+            if (this.activeItemName === feedNames[feedNames.length - 1]) {
+              this.switchList(feedNames[0])
             } else {
-              this.switchList(this.currentId + 1)
+              this.switchList(feedNames[feedNames.indexOf(this.activeItemName) + 1])
             }
             break
           case 38: // up arrow
-            if (this.currentId !== 0) {
-              this.switchList(this.currentId - 1)
+            if (this.activeItemName !== feedNames[0]) {
+              this.switchList(feedNames[feedNames.indexOf(this.activeItemName) - 1])
             } else {
-              this.switchList(this.apiData.length - 1)
+              this.switchList(feedNames[feedNames.length - 1])
             }
             break
           case 27: // escape
@@ -194,7 +194,7 @@ const app = new Vue({
           { this.hasApiData &&  this.apiData.sorting.map((name, index) => {
             let item = this.apiData.feeds[name]
             return (
-              <div class={["item", (item.name === this.currentId) && "active"]}>
+              <div class={["item", (item.name === this.activeItemName) && "active"]}>
                 <img src={item.icon} title={item.name} onClick={this.switchList.bind(this, item.name)} />
               </div>
             )
@@ -202,7 +202,7 @@ const app = new Vue({
         </div>
         <div class="main">
           <div class="navbar">
-            <div class="title">{this.hasApiData && this.apiData.feeds[this.currentId].name}</div> 
+            <div class="title">{this.hasApiData && this.apiData.feeds[this.activeItemName].name}</div> 
           </div>
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>
