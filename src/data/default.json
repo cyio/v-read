@@ -15,6 +15,57 @@
       },
       "type": "html",
       "url": "https://lvv2.com/"
+    },
+    "币世界": {
+      "name": "币世界",
+      "icon": "https://www.bishijie.com/favicon.ico",
+      "selectors": {
+        "url": ".live h2 a"
+      },
+      "type": "html",
+      "url": "https://www.bishijie.com/kuaixun/"
+    },
+    "华尔街见闻": {
+      "name": "华尔街见闻",
+      "icon": "https://static-alpha.wallstreetcn.com/wscn/favicon.d4bb8b4dbefdc9c2584dbfe140871554.png",
+      "selectors": {
+        "url": ".home-article-item a.title"
+      },
+      "type": "html",
+      "url": "https://wallstreetcn.com/"
+    },
+    "Bitcoin - Reddit": {
+      "name": "Bitcoin - Reddit",
+      "icon": "https://img.bishijie.com/coinpic-bitcoin.jpg?imageMogr2/thumbnail/100x",
+      "selectors": {
+        "url": "#siteTable .title.may-blank"
+      },
+      "type": "html",
+      "url": "http://www.reddit.com/r/btc"
+    },
+    "购物 - 水木社区": {
+      "name": "购物 - 水木社区",
+      "icon": "http://images.newsmth.net/nForum/favicon.ico",
+      "type": "rss",
+      "url": "http://www.newsmth.net/nForum/rss/board-Shopping"
+    },
+    "精选 - 什么值得买": {
+      "name": "精选 - 什么值得买",
+      "icon": "http://www.smzdm.com/favicon.ico",
+      "selectors": {
+        "url": "#feed-main-list .feed-block-title a"
+      },
+      "type": "html",
+      "url": "http://www.smzdm.com/jingxuan/#list_6"
+    },
+    "薅羊毛 - 购物党": {
+      "name": "薅羊毛 - 购物党",
+      "icon": "http://gwdang.com/favicon.ico",
+      "selectors": {
+        "url": ".search_box a.zdm_title"
+      },
+      "type": "html",
+      "url": "http://gwdang.com/promotion/yangmao"
     }
   }
 }

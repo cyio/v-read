@@ -109,6 +109,7 @@ const app = new Vue({
               url: item.url
             })
           })
+          this.list.length = maxItemNum
           this.showPreloader = false
         })
       } else if (site.type === 'rss') {
