@@ -1,15 +1,18 @@
 import Vue from 'vue'
-import Sortable from 'sortablejs'
 import { Storage, sleep, IsJsonString } from './modules/utils'
 import Modal from './modal.js'
+import draggable from "vuedraggable"
 Vue.config.productionTip = false
 Vue.config.devtools = false
 
-let sortable
 var app = new Vue({
   el: '#app',
+  components: {
+    draggable,
+  },
   data: {
     apiData: null,
+    list: [],
     currentId: null,
     currentItem: null,
     showModals: {
@@ -24,8 +27,13 @@ var app = new Vue({
         apiData: null, // 设置默认值，不需要也可用数组
       }, (items) => {
         if (items.apiData) {
-          // console.log('get', items.apiData)
-          this.apiData = items.apiData
+          const { apiData } = items
+          console.log('get', apiData)
+          this.apiData = apiData
+          this.list = apiData.sorting.map((name) => {
+            return this.apiData.feeds[name]
+          })
+          console.log(this.list)
         }
       });
     },
@@ -35,12 +43,10 @@ var app = new Vue({
       chrome.storage.sync.set({ apiData: null })
     },
     saveItemForm() {
-      if (this.apiData.feeds[this.currentItem.name]) {
-        alert('标题重复，请修改')
-        return
-      }
       this.apiData.feeds[this.currentItem.name] = this.currentItem
-      this.apiData.sorting.push(this.currentItem.name)
+      if (!this.apiData.feeds[this.currentItem.name]) {
+        this.apiData.sorting.push(this.currentItem.name)
+      }
       chrome.storage.sync.set({ apiData: this.apiData })
       this.showModals.edit = false
     },
@@ -61,7 +67,6 @@ var app = new Vue({
       if (!confirm(`确认删除${index}？`)) return
       const child = document.querySelector(`[data-id='${index}']`)
       child.parentElement.removeChild(child)
-      sortable.save()
     },
     showItem(item) {
       this.showModals.edit = true
@@ -93,25 +98,19 @@ var app = new Vue({
   },
   computed: {
   },
+  watch: {
+    'list': function(newVal, oldVal) {
+      console.log({oldVal}, {newVal})
+      if (newVal.length) {
+        console.log('watch save list')
+        const toSaveData = this.apiData
+        toSaveData.sorting = newVal.map(i => i.name)
+        chrome.storage.sync.set({ apiData: JSON.parse(toSaveData) })
+      }
+    }
+  },
   mounted () {
     this.getApiData()
-    const self = this
-		const el = document.getElementById('items')
-    sortable = Sortable.create(el, {
-      store: {
-        get() {
-          return []
-        },
-        set(sortable) {
-          self.apiData.sorting = sortable.toArray();
-          chrome.storage.sync.set({ apiData: self.apiData })
-        }
-      },
-      onSort(evt) {
-        // console.log(evt, self.apiData)
-        this.save()
-      }
-    })
   },
   render (h) { // <-- h must be in scope
     return (
@@ -133,25 +132,34 @@ var app = new Vue({
           <div class="content">
             <ul id="items" class="items">
               {
-                this.apiData && this.apiData.sorting.map((name, index) => {
-                  let item = this.apiData.feeds[name]
-                  return (
-                    <li class="item" data-id={item.name}>
-                      <div class="itemInner">
-                        <img class="logo" src={item.icon} />
-                        <div class="itemMain">
-                          <div class="itemTitle">{item.name}</div>
-                          <div class="itemUrl">{item.url}</div>
-                        </div>
-                        <div class="btnGroup">
-                          <div class="action edit" onClick={this.showItem.bind(this, item)}>编辑</div>
-                          <div class="action" onClick={this.cloneItem.bind(this, item)}>克隆</div>
-                          <div class="action" onClick={this.deleteItem.bind(this, item.name)}>删除</div>
-                        </div>
-                      </div>
-                    </li>
-                  )
-                })
+                this.apiData && (
+                  <draggable
+                    list={this.list}
+                    class="list-group"
+                    ghost-class="ghost"
+                  >
+                      {
+                        this.list.map((item, index) => {
+                          return (
+                            <li class="item" data-id={item.name}>
+                              <div class="itemInner">
+                                <img class="logo" src={item.icon} />
+                                <div class="itemMain">
+                                  <div class="itemTitle">{item.name}</div>
+                                  <div class="itemUrl">{item.url}</div>
+                                </div>
+                                <div class="btnGroup">
+                                  <div class="action edit" onClick={this.showItem.bind(this, item)}>编辑</div>
+                                  <div class="action" onClick={this.cloneItem.bind(this, item)}>克隆</div>
+                                  <div class="action" onClick={this.deleteItem.bind(this, item.name)}>删除</div>
+                                </div>
+                              </div>
+                            </li>
+                          )
+                        })
+                      }
+                  </draggable>
+                )
               }
             </ul>
           </div>

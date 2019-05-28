@@ -2,10 +2,6 @@
   "name": "v-read",
   "version": "0.2.4",
   "description": "",
-  "engines": {
-    "node": "7.0.0",
-    "npm": "3.10.8"
-  },
   "scripts": {
     "build": "mkdir -p ./build/prod && webpack --config ./webpack/webpack.config.prod.js",
     "start": "mkdir -p ./build/dev && webpack --config ./webpack/webpack.config.dev.js",
@@ -17,8 +13,8 @@
     "axios": "^0.16.2",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
-    "sortablejs": "^1.6.0",
-    "vue": "^2.4.2"
+    "vue": "^2.4.2",
+    "vuedraggable": "^2.21.0"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
