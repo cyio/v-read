@@ -17,8 +17,8 @@ var app = new Vue({
     currentItem: null,
     showModals: {
       edit: false,
-      import: false,
-      export: false
+      importData: false,
+      exportData: false
     },
   },
   methods: {
@@ -30,10 +30,7 @@ var app = new Vue({
           const { apiData } = items
           console.log('get', apiData)
           this.apiData = apiData
-          this.list = apiData.sorting.map((name) => {
-            return this.apiData.feeds[name]
-          })
-          console.log(this.list)
+          this.setList()
         }
       });
     },
@@ -43,11 +40,12 @@ var app = new Vue({
       chrome.storage.sync.set({ apiData: null })
     },
     saveItemForm() {
-      this.apiData.feeds[this.currentItem.name] = this.currentItem
       if (!this.apiData.feeds[this.currentItem.name]) {
+        this.apiData.feeds[this.currentItem.name] = this.currentItem
         this.apiData.sorting.push(this.currentItem.name)
+        this.setList()
+        this.updateApiData()
       }
-      chrome.storage.sync.set({ apiData: this.apiData })
       this.showModals.edit = false
     },
     addItem() {
@@ -63,10 +61,14 @@ var app = new Vue({
       }
       this.showModals.edit = true
     },
-    deleteItem(index) {
+    deleteItem(name, index) {
       if (!confirm(`确认删除${index}？`)) return
-      const child = document.querySelector(`[data-id='${index}']`)
-      child.parentElement.removeChild(child)
+      if (delete this.apiData.feeds[name]) {
+        console.log(name, index)
+        this.apiData.sorting.splice(index, 1)
+        this.setList()
+        this.updateApiData()
+      }
     },
     showItem(item) {
       this.showModals.edit = true
@@ -79,35 +81,40 @@ var app = new Vue({
       this.currentItem = cloneItem
       this.showModals.edit = true
     },
-    import() {
+    importData() {
       let input = prompt('将 JSON 格式的内容粘贴到输入框')
       if (input) {
         if (!IsJsonString(input)) {
           alert('不是有效的 JSON 格式')
           return
         }
-        this.apiData = JSON.parse(input)
-        chrome.storage.sync.set({ apiData: JSON.parse(input) })
+        const apiData = JSON.parse(input)
+        if (apiData.sorting.length === 0) {
+          apiData.sorting = Object.keys(apiData.feeds)
+        }
+        this.apiData = apiData
+        this.updateApiData()
       }
     },
-    async export() {
-      this.showModals.export = true
+    async exportData() {
+      this.showModals.exportData = true
       await sleep(200)
-      document.getElementById('export').value = JSON.stringify(this.apiData, null, 2)
+      document.getElementById('exportData').value = JSON.stringify(this.apiData, null, 2)
+    },
+    updateApiData() {
+      if (this.list.length) {
+        this.apiData.sorting = this.list.map(i => i && i.name)
+      }
+      // this.apiData.sorting = this.apiData.sorting.filter(i => Boolean(i))
+      console.log('update apiData', this.apiData.sorting)
+      chrome.storage.sync.set({ apiData: this.apiData })
+    },
+    setList() {
+      this.list = this.apiData.sorting.map((name) => this.apiData.feeds[name])
+      console.log(this.list)
     }
   },
   computed: {
-  },
-  watch: {
-    'list': function(newVal, oldVal) {
-      console.log({oldVal}, {newVal})
-      if (newVal.length) {
-        console.log('watch save list')
-        const toSaveData = this.apiData
-        toSaveData.sorting = newVal.map(i => i.name)
-        chrome.storage.sync.set({ apiData: JSON.parse(toSaveData) })
-      }
-    }
   },
   mounted () {
     this.getApiData()
@@ -125,8 +132,8 @@ var app = new Vue({
           <h1>我的订阅</h1>
           <div class="controls">
             <button class="add" onClick={this.addItem.bind(this)}>添加订阅</button>
-            <button onClick={this.import.bind(this)}>导入</button>
-            <button onClick={this.export.bind(this)}>导出</button>
+            <button onClick={this.importData.bind(this)}>导入</button>
+            <button onClick={this.exportData.bind(this)}>导出</button>
             <button onClick={this.clearStorage.bind(this)}>清空</button>
           </div>
           <div class="content">
@@ -137,9 +144,11 @@ var app = new Vue({
                     list={this.list}
                     class="list-group"
                     ghost-class="ghost"
+                    onEnd={this.updateApiData}
                   >
                       {
                         this.list.map((item, index) => {
+                          if (!item) return false
                           return (
                             <li class="item" data-id={item.name}>
                               <div class="itemInner">
@@ -151,7 +160,7 @@ var app = new Vue({
                                 <div class="btnGroup">
                                   <div class="action edit" onClick={this.showItem.bind(this, item)}>编辑</div>
                                   <div class="action" onClick={this.cloneItem.bind(this, item)}>克隆</div>
-                                  <div class="action" onClick={this.deleteItem.bind(this, item.name)}>删除</div>
+                                  <div class="action" onClick={this.deleteItem.bind(this, item.name, index)}>删除</div>
                                 </div>
                               </div>
                             </li>
@@ -203,23 +212,23 @@ var app = new Vue({
                 </div>
                 <div class="action-area">
                   <button  onClick={() => this.showModals.edit = false}>取消</button>
-                  <button onClick={this.saveItemForm.bind(this)}>确定</button>
+                  <button onClick={() => this.saveItemForm()}>确定</button>
                 </div>
               </div>
             </Modal>
           )
         }
         {
-          this.showModals.export && (
+          this.showModals.exportData && (
             <Modal slot="modalContent">
               <div>
                 <h3>导出</h3>
-                <div class="close-button"  onClick={() => this.showModals.export = false}></div>
+                <div class="close-button"  onClick={() => this.showModals.exportData = false}></div>
                 <div class="content-area">
-                  <textarea id="export"></textarea>
+                  <textarea id="exportData"></textarea>
                 </div>
                 <button onClick={() => {
-                  document.getElementById('export').select()
+                  document.getElementById('exportData').select()
                   document.execCommand("Copy")
                 }}>复制</button>
               </div>
