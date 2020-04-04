@@ -20,25 +20,18 @@
       "name": "币世界",
       "icon": "https://www.bishijie.com/favicon.ico",
       "selectors": {
-        "url": ".live h2 a"
+        "url": ".content a",
+        "title": ".content a h3"
       },
       "type": "html",
       "url": "https://www.bishijie.com/kuaixun/"
-    },
-    "华尔街见闻": {
-      "name": "华尔街见闻",
-      "icon": "https://static-alpha.wallstreetcn.com/wscn/favicon.d4bb8b4dbefdc9c2584dbfe140871554.png",
-      "selectors": {
-        "url": ".home-article-item a.title"
-      },
-      "type": "html",
-      "url": "https://wallstreetcn.com/"
     },
     "Bitcoin - Reddit": {
       "name": "Bitcoin - Reddit",
       "icon": "https://img.bishijie.com/coinpic-bitcoin.jpg?imageMogr2/thumbnail/100x",
       "selectors": {
-        "url": "#siteTable .title.may-blank"
+        "url": "a[data-click-id=body]",
+        "title": "a[data-click-id=body] h3"
       },
       "type": "html",
       "url": "http://www.reddit.com/r/btc"
@@ -58,11 +51,20 @@
       "type": "html",
       "url": "http://www.smzdm.com/jingxuan/#list_6"
     },
+    "电脑数码 - 什么值得买": {
+      "icon": "http://www.smzdm.com/favicon.ico",
+      "name": "精选 - 什么值得买",
+      "selectors": {
+        "url": "#feed-main-list .feed-block-title a"
+      },
+      "type": "html",
+      "url": "https://www.smzdm.com/jingxuan/xuan/s0f163t0b0d0r0p1/"
+    },
     "薅羊毛 - 购物党": {
       "name": "薅羊毛 - 购物党",
       "icon": "http://gwdang.com/favicon.ico",
       "selectors": {
-        "url": ".search_box a.zdm_title"
+        "url": ".title.tl"
       },
       "type": "html",
       "url": "http://gwdang.com/promotion/yangmao"

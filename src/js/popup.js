@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import $ from 'jquery'
 import axios from 'axios'
-import { mainConnector, Storage } from './modules/utils'
+import { mainConnector } from './modules/utils'
 
 const port  = new mainConnector();
 port.name = "chrome-extension-skeleton";
@@ -16,7 +16,7 @@ Vue.config.devtools = false
 const feedsApiUrl = '../data/default.json'
 const maxItemNum = 15
 const alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-const app = new Vue({
+new Vue({
   el: '#app',
   data: {
     list: [],
@@ -59,7 +59,7 @@ const app = new Vue({
         url: [],
         title: []
       }
-      parsedData.url = $(data).find(site.selectors.url)
+      parsedData.url = $(data).find(site.selectors.url) // url 可能跟 title 不在一级。由用户提前设定更好？
       parsedData.title = site.selectors.title ? $(data).find(site.selectors.title) : $(data).find(site.selectors.url)
       for (let i = 0; i < maxItemNum; i++) {
         let post = {
@@ -67,7 +67,7 @@ const app = new Vue({
           title: $.trim($(parsedData.title[i]).text())
           // media: $(mediaData[i]).attr("src") || ""
         };
-        console.log(post.url)
+        console.log('post.url ', post.url)
         if (!post.url) continue
         if (post.url.indexOf("http") == -1) {
           let baseUrl = site.url.match(/http[s]?:\/\/+[\s\S]+?\//)[0].slice(0, -1);
@@ -82,6 +82,7 @@ const app = new Vue({
       // console.log(this.list)
       this.showPreloader = false
     },
+    // TODO
     parseXML (rssUrl) {
     },
     switchList (name) {
@@ -89,6 +90,7 @@ const app = new Vue({
       this.showHint = false
       this.activeItemName = name
       this.handleSite(this.activeItemName)
+      // 上一项，若有未完成请求，如何取消，避免影响当前项展示
     },
     openTab (url) {
       chrome.tabs.create({

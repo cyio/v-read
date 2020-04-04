@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Storage, sleep, IsJsonString } from './modules/utils'
 import Modal from './modal.js'
-import draggable from "vuedraggable"
+import draggable from 'vuedraggable'
 Vue.config.productionTip = false
 Vue.config.devtools = false
 
@@ -11,8 +11,10 @@ var app = new Vue({
     draggable,
   },
   data: {
-    apiData: null,
-    list: [],
+    apiData: {
+      feeds: [],
+      sorting: [], // 排序单独存储，属于用户个人偏好，如果 sorting 不更新，会导致条目不显示
+    },
     currentId: null,
     currentItem: null,
     showModals: {
@@ -30,7 +32,6 @@ var app = new Vue({
           const { apiData } = items
           console.log('get', apiData)
           this.apiData = apiData
-          this.setList()
         }
       });
     },
@@ -40,13 +41,14 @@ var app = new Vue({
       chrome.storage.sync.set({ apiData: null })
     },
     saveItemForm() {
-      if (!this.apiData.feeds[this.currentItem.name]) {
-        this.apiData.feeds[this.currentItem.name] = this.currentItem
+      this.apiData.feeds[this.currentItem.name] = this.currentItem
+      // 需要同时更新 apiData 、sorting
+      // 新增需更新 sorting
+      if (!this.apiData.sorting.includes(this.currentItem.name)) {
         this.apiData.sorting.push(this.currentItem.name)
-        this.setList()
-        this.updateApiData()
       }
       this.showModals.edit = false
+      this.updateStorage()
     },
     addItem() {
       this.currentItem = {
@@ -55,7 +57,8 @@ var app = new Vue({
         "icon": null,
         "url": null,
         "selectors": {
-          "url": null
+          "url": null,
+          "title": null
         },
         "isShow": true
       }
@@ -64,10 +67,9 @@ var app = new Vue({
     deleteItem(name, index) {
       if (!confirm(`确认删除${index}？`)) return
       if (delete this.apiData.feeds[name]) {
-        console.log(name, index)
+        console.log('delete ', name, index)
         this.apiData.sorting.splice(index, 1)
-        this.setList()
-        this.updateApiData()
+        this.updateStorage()
       }
     },
     showItem(item) {
@@ -77,7 +79,7 @@ var app = new Vue({
     },
     cloneItem(item) {
       let cloneItem = {...item}
-      cloneItem.name = cloneItem.name
+      cloneItem.name = cloneItem.name + ' 克隆'
       this.currentItem = cloneItem
       this.showModals.edit = true
     },
@@ -93,7 +95,7 @@ var app = new Vue({
           apiData.sorting = Object.keys(apiData.feeds)
         }
         this.apiData = apiData
-        this.updateApiData()
+        this.updateStorage()
       }
     },
     async exportData() {
@@ -101,20 +103,32 @@ var app = new Vue({
       await sleep(200)
       document.getElementById('exportData').value = JSON.stringify(this.apiData, null, 2)
     },
-    updateApiData() {
-      if (this.list.length) {
-        this.apiData.sorting = this.list.map(i => i && i.name)
-      }
-      // this.apiData.sorting = this.apiData.sorting.filter(i => Boolean(i))
+    // 相当于更新远程数据
+    updateStorage() {
       console.log('update apiData', this.apiData.sorting)
       chrome.storage.sync.set({ apiData: this.apiData })
     },
-    setList() {
-      this.list = this.apiData.sorting.map((name) => this.apiData.feeds[name])
-      console.log(this.list)
-    }
+    cancel() {
+      this.currentItem = null
+      this.currentId = null
+      this.showModals.edit = false
+    },
+    onDragEnd() {
+      if (this.list.length) {
+        this.apiData.sorting = this.list.map(i => i && i.name)
+      }
+      this.updateStorage()
+    },
   },
   computed: {
+    list() {
+      return this.apiData.sorting.map((name) => this.apiData.feeds[name])
+    }
+  },
+  watch: {
+    // 'apiData.feeds': (newVal) => {
+      // console.log('watch ', newVal)
+    // }
   },
   mounted () {
     this.getApiData()
@@ -144,7 +158,7 @@ var app = new Vue({
                     list={this.list}
                     class="list-group"
                     ghost-class="ghost"
-                    onEnd={this.updateApiData}
+                    onEnd={this.onDragEnd}
                   >
                       {
                         this.list.map((item, index) => {
@@ -211,7 +225,7 @@ var app = new Vue({
                   }
                 </div>
                 <div class="action-area">
-                  <button  onClick={() => this.showModals.edit = false}>取消</button>
+                  <button  onClick={() => this.cancel()}>取消</button>
                   <button onClick={() => this.saveItemForm()}>确定</button>
                 </div>
               </div>
