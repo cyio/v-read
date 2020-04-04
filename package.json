@@ -40,7 +40,7 @@
     "sinon": "^2.4.1",
     "webpack": "^3.4.1",
     "webpack-chrome-extension-reloader": "^0.4.0",
-    "webpack-dev-server": "^2.6.1",
+    "webpack-dev-server": "^3.1.11",
     "webpack-node-externals": "^1.6.0",
     "webpack-version-file-plugin": "https://github.com/cyio/webpack-version-file-plugin",
     "zip-webpack-plugin": "^2.0.0"
