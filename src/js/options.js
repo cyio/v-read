@@ -17,8 +17,10 @@ var app = new Vue({
     },
     currentId: null,
     currentItem: null,
+    editOriginalItem: {},
     showModals: {
       edit: false,
+      add: false,
       importData: false,
       exportData: false
     },
@@ -41,13 +43,47 @@ var app = new Vue({
       chrome.storage.sync.set({ apiData: null })
     },
     saveItemForm() {
+      if (this.showModals.edit) {
+        this.saveEditItem()
+      } else {
+        this.saveAddItem()
+      }
+    },
+    saveEditItem() {
+      // 如果 name 发生变化
+      if (this.currentItem.name !== this.editOriginalItem.name) {
+        // name 已存在
+        if (this.currentItem.name in this.apiData.feeds) {
+          alert('名称重复，请修改')
+          return
+        // 替换当前项
+        } else {
+          delete this.apiData.feeds[this.editOriginalItem.name]
+          this.apiData.feeds[this.currentItem.name] = this.currentItem
+          // this.deleteItem(...this.editOriginalItem.name)
+          this.apiData.sorting.splice(this.editOriginalItem.index, 1, this.currentItem.name)
+        }
+      } else {
+        this.apiData.feeds[this.currentItem.name] = this.currentItem
+        if (!this.apiData.sorting.includes(this.currentItem.name)) {
+          this.apiData.sorting.push(this.currentItem.name)
+        }
+      }
+      this.showModals.edit = false
+      this.updateStorage()
+    },
+    saveAddItem() {
+      if (this.currentItem.name in this.apiData.feeds) {
+        alert('名称重复，请修改')
+        return
+      }
       this.apiData.feeds[this.currentItem.name] = this.currentItem
       // 需要同时更新 apiData 、sorting
       // 新增需更新 sorting
       if (!this.apiData.sorting.includes(this.currentItem.name)) {
         this.apiData.sorting.push(this.currentItem.name)
       }
-      this.showModals.edit = false
+      this.showModals.add = false
       this.updateStorage()
     },
     addItem() {
@@ -62,7 +98,7 @@ var app = new Vue({
         },
         "isShow": true
       }
-      this.showModals.edit = true
+      this.showModals.add = true
     },
     deleteItem(name, index) {
       if (!confirm(`确认删除${index}？`)) return
@@ -72,16 +108,18 @@ var app = new Vue({
         this.updateStorage()
       }
     },
-    showItem(item) {
-      this.showModals.edit = true
+    editItem(item, index) {
       this.currentItem = item
       this.currentId = item.name
+      this.editOriginalItem.name = item.name
+      this.editOriginalItem.index = index
+      this.showModals.edit = true
     },
     cloneItem(item) {
       let cloneItem = {...item}
       cloneItem.name = cloneItem.name + ' 克隆'
       this.currentItem = cloneItem
-      this.showModals.edit = true
+      this.showModals.add = true
     },
     importData() {
       let input = prompt('将 JSON 格式的内容粘贴到输入框')
@@ -112,6 +150,7 @@ var app = new Vue({
       this.currentItem = null
       this.currentId = null
       this.showModals.edit = false
+      this.showModals.add = false
     },
     onDragEnd() {
       if (this.list.length) {
@@ -172,7 +211,7 @@ var app = new Vue({
                                   <div class="itemUrl">{item.url}</div>
                                 </div>
                                 <div class="btnGroup">
-                                  <div class="action edit" onClick={this.showItem.bind(this, item)}>编辑</div>
+                                  <div class="action edit" onClick={this.editItem.bind(this, item, index)}>编辑</div>
                                   <div class="action" onClick={this.cloneItem.bind(this, item)}>克隆</div>
                                   <div class="action" onClick={this.deleteItem.bind(this, item.name, index)}>删除</div>
                                 </div>
@@ -188,11 +227,11 @@ var app = new Vue({
           </div>
         </div>
         {
-          this.showModals.edit && (
+          (this.showModals.edit || this.showModals.add) && (
             <Modal slot="modalContent">
               <div>
                 <h3>订阅表单</h3>
-                <div class="close-button"  onClick={() => this.showModals.edit = false}></div>
+                <div class="close-button"  onClick={() => this.showModals.edit = this.showModals.add = false}></div>
                 <div class="content-area">
                   <p>类型</p>
                   <select domPropsValue={this.currentItem.type} onChange={(e) => this.currentItem.type = e.target.value}>
