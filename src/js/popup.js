@@ -20,6 +20,7 @@ new Vue({
   el: '#app',
   data: {
     list: [],
+    lists: {},
     apiData: null,
     activeItemName: null,
     showPreloader: true,
@@ -37,19 +38,20 @@ new Vue({
         this.apiData = items.apiData
           ? items.apiData
           : await this.getFeedsApi(feedsApiUrl).then((tmpData) => {
-            let data = {...tmpData}
+            const data = {...tmpData}
             if (!data.sorting.length) {
               for (let i of Object.keys(data.feeds)) {
                 data.sorting.push(i)
               }
             }
-            this.activeItemName = data.sorting[0]
-            console.log(data)
+            // this.activeItemName = data.sorting[0]
             chrome.storage.sync.set({ apiData: data })
             return data
           })
 
+        console.log(this.apiData)
         this.activeItemName = this.apiData.sorting[0]
+        Object.keys(this.apiData.feeds).forEach(i => this.lists[i] = [])
         this.handleSite(this.activeItemName)
       });
     },
@@ -77,9 +79,9 @@ new Vue({
           post.url = baseUrl + post.url;
           post.media = baseUrl + post.media;
         };
-        this.list.push(post);
+        this.lists[site.name].push(post);
       };
-      // console.log(this.list)
+      console.log('html: ', this.lists)
       this.showPreloader = false
     },
     // TODO
@@ -89,7 +91,9 @@ new Vue({
       console.log('handle id ', name)
       this.showHint = false
       this.activeItemName = name
-      this.handleSite(this.activeItemName)
+      if (this.lists[this.activeItemName].length === 0) {
+        this.handleSite(this.activeItemName)
+      }
       // 上一项，若有未完成请求，如何取消，避免影响当前项展示
     },
     openTab (url) {
@@ -99,25 +103,25 @@ new Vue({
       })
     },
     handleSite (id) {
-      this.list = []
+      // this.list = []
       this.showPreloader = true
       const site = this.apiData.feeds[id]
       console.warn('id', id, site.type, site.url)
       if (site.type === 'api') {
         axios.get(site.url).then(res => {
           res.data.forEach((item) => {
-            this.list.push({
+            this.lists[site.name].push({
               title: item.title,
               url: item.url
             })
           })
-          this.list.length = maxItemNum
+          this.lists[site.name].length = maxItemNum
           this.showPreloader = false
         })
       } else if (site.type === 'rss') {
         $.get(site.url, data => { // 用 axios 请求 rss 有问题
           $(data).find('item').each((index, item) => {
-            this.list.push({
+            this.lists[site.name].push({
               title: $(item).find('title')[0].textContent,
               url: $(item).find('link')[0].textContent
             })
@@ -210,7 +214,7 @@ new Vue({
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>
                 : 
-                this.list.map((item, index) => {
+                this.lists[this.activeItemName].map((item, index) => {
                   return (
                     <div class="item">
                       <a class="link" href={item.url} title={item.title} link-id={alphabet[index].toUpperCase()}>{item.title}</a>
