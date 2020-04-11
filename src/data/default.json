@@ -53,7 +53,7 @@
     },
     "电脑数码 - 什么值得买": {
       "icon": "http://www.smzdm.com/favicon.ico",
-      "name": "精选 - 什么值得买",
+      "name": "电脑数码 - 什么值得买",
       "selectors": {
         "url": "#feed-main-list .feed-block-title a"
       },

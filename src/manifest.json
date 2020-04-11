@@ -6,17 +6,11 @@
     "default_popup": "html/popup.html"
   },
   "background": { "scripts": ["js/background.js"] },
-  "content_scripts": [{
-    "matches": [ "http://*/*", "https://*/*" ],
-    "js": [ "js/content.js" ]
-  }],
   "options_page": "html/options.html",
   "permissions": [
-    "notifications",
-    "cookies",
 		"storage",
     "webRequest",
-    "webRequestBlocking"
+    "https://*/"
   ],
   "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
   "name": "<%= package.name %>",

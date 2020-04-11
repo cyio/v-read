@@ -19,6 +19,9 @@
 ::-webkit-scrollbar-track {
   background: #F1F1F1;
 }
+a {
+	text-decoration: none;
+}
 
 html, body {
   position: relative;
@@ -68,8 +71,11 @@ body, #app {
 .main .list {
   position: relative;
   height: 100%;
+  overflow: scroll;
 }
 .navbar {
+  display: block;
+  text-decoration: none;
   left: 0;
   top: 0;
   background: #f7f7f8;
@@ -90,7 +96,6 @@ body, #app {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	text-decoration: none;
 }
 .list .item {
   position: relative;

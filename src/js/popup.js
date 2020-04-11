@@ -56,7 +56,7 @@ new Vue({
       });
     },
     parseSiteHtml (site, data) {
-      console.warn(site)
+      console.log(site)
       let parsedData = {
         url: [],
         title: []
@@ -106,7 +106,7 @@ new Vue({
       // this.list = []
       this.showPreloader = true
       const site = this.apiData.feeds[id]
-      console.warn('id', id, site.type, site.url)
+      console.log('id', id, site.type, site.url)
       if (site.type === 'api') {
         axios.get(site.url).then(res => {
           res.data.forEach((item) => {
@@ -115,7 +115,9 @@ new Vue({
               url: item.url
             })
           })
-          this.lists[site.name].length = maxItemNum
+          if (this.lists[site.name].length > maxItemNum) {
+            this.lists[site.name].length = maxItemNum
+          }
           this.showPreloader = false
         })
       } else if (site.type === 'rss') {
@@ -209,7 +211,13 @@ new Vue({
         </div>
         <div class="main">
           <div class="navbar">
-            <div class="title">{this.hasApiData && this.apiData.feeds[this.activeItemName].name}</div> 
+            {
+              this.hasApiData && (
+                <a href={this.apiData.feeds[this.activeItemName].url} target="_blank">
+                  <span class="title">{this.apiData.feeds[this.activeItemName].name}</span>
+                </a>
+              )
+            }
           </div>
           <div class="list" >
             {this.showPreloader ? <div class="preloader"></div>
