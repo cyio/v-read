@@ -27,6 +27,10 @@ new Vue({
     showHint: false,
   },
   methods: {
+    onClickItem(evt, url) {
+      evt.stopPropagation()
+      chrome.tabs.create({url, active: false});
+    },
     getFeedsApi (url) {
       return axios.get(url).then(res => res.data);
     },
@@ -191,10 +195,10 @@ new Vue({
   mounted () {
     // Storage.setValue('ver', '1.0')
     // port.send({act: 'say hello'})
-		// this.parseXML()
-		this.getApiData()
-		this.setClickHandler()
-		this.setHints()
+    // this.parseXML()
+    this.getApiData()
+    this.setClickHandler()
+    this.setHints()
   },
   render (h) { // <-- h must be in scope
     return (
@@ -220,16 +224,15 @@ new Vue({
             }
           </div>
           <div class="list" >
-            {this.showPreloader ? <div class="preloader"></div>
-                : 
-                this.lists[this.activeItemName].map((item, index) => {
-                  return (
-                    <div class="item">
-                      <a class="link" href={item.url} title={item.title} link-id={alphabet[index].toUpperCase()}>{item.title}</a>
-                      {this.showHint && <span class="hint">{alphabet[index].toUpperCase()}</span>}
-                    </div>
-                  )
-                })
+            {this.showPreloader ? <div class="preloader"></div> :
+              this.lists[this.activeItemName].map((item, index) => {
+                return (
+                  <div class="item" onClick={e => this.onClickItem(e, item.url)}>
+                    <a class="link" href={item.url} title={item.title} link-id={alphabet[index].toUpperCase()}>{item.title}</a>
+                    {this.showHint && <span class="hint">{alphabet[index].toUpperCase()}</span>}
+                  </div>
+                )
+              })
             }
           </div>
         </div> 

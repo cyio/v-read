@@ -10,7 +10,8 @@
   "permissions": [
 		"storage",
     "webRequest",
-    "https://*/"
+    "https://*/",
+    "http://*/"
   ],
   "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
   "name": "<%= package.name %>",
