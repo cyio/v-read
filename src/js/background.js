@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { backgroundConnector, Storage } from './modules/utils'
 
 var port = new backgroundConnector();

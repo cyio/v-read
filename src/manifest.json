@@ -1,19 +1,22 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "icons": { "128": "images/icon.png" },
-  "browser_action": {
+  "action": {
     "default_icon": "images/icon.png",
     "default_popup": "html/popup.html"
   },
-  "background": { "scripts": ["js/background.js"] },
+  "background": { "service_worker": "js/background.js" },
   "options_page": "html/options.html",
   "permissions": [
 		"storage",
-    "webRequest",
-    "https://*/",
-    "http://*/"
+    "webRequest"
   ],
-  "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
+  "host_permissions": [
+    "https://www.v2ex.com/"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
   "name": "<%= package.name %>",
   "version": "<%= package.version %>",
   "description": "<%= package.description %>"
